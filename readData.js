@@ -14,23 +14,17 @@ const data = resource.reduce((result, next) => {
 }, {});
 
 function splitWord(str) {
-  const step1 = jieba.tag(str)
-    // .filter(item => ['n', 'v'].indexOf(item.tag) !== -1)
+  return jieba.tag(str)
     .map(item => item.word)
-    // .filter((item, i, arr) => arr.indexOf(item) === i)
     .join('$$');
 
-  return step1;
-
-  // return jieba.extract(step1, 10)
-  //   .map(item => item.word).sort().join('$$');
 }
 
 function writeDataToFile(path, data) {
   let result = '';
-  for(let line in data) {
-    if(data.hasOwnProperty(line)) {
-      result += line + "\t"+ data[line].map(({answer, right}) => `${answer} ${right}`).join('\t') + '\n';
+  for (let line in data) {
+    if (data.hasOwnProperty(line)) {
+      result += line + "\t" + data[line].map(({answer, right}) => `${answer}&&${right}`).join('\t') + '\n';
     }
   }
 

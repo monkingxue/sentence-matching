@@ -8,12 +8,11 @@ const resource = text.split(/\r?\n/).map(item => item.split('\t'));
 const data = resource.filter(item => item.length > 1)
   .reduce((result, [q, ...a]) => {
     result[q] = a.map(item => {
-      const [answer, right] = item.split(' ');
+      const [answer, right] = item.split('&&');
       return {answer, right}
     });
     return result;
   }, {});
-
 
 function appearTimes(item, answers) {
   return answers.reduce((result, acc) =>
@@ -26,7 +25,7 @@ function calculate(question, answers) {
 
   const weights = {};
   question.forEach(item => {
-    weights[item] = 1 / Math.pow(appearTimes(item, answers) + 1, 2);
+    weights[item] = 1 / Math.pow(appearTimes(item, answers), 2);
   });
 
   return answers.map(answer => {
@@ -43,11 +42,9 @@ for (let q in data) {
     const rights = data[q].map(item => item.right);
     const rawResult = calculate(q, answers);
     const result =
-      rawResult.map((item, i) => ({answer: item, right: rights[i]}))
+      rawResult.map((item, i) => ({answer: item, right: Number(rights[i])}))
         .sort((a, b) => b.answer - a.answer);
-    const idx =  result.map(item=>item.right).indexOf('1');
-    // // const result = fuzz.extract(q, answer, {scorer: fuzz.ratio});
-    // const idx = result.map(item => data[q][item[2]].right).indexOf('1');
+    const idx =  result.map(item=>item.right).indexOf(1);
     correct += idx < 1 ? 1 : 0;
   }
 }
