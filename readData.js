@@ -2,7 +2,7 @@ const fs = require('fs');
 const jieba = require('nodejieba');
 
 jieba.load();
-const path = 'BoP2017-DBQA.dev.txt';
+const path = 'BoP2017-DBQA.train.txt';
 const text = fs.readFileSync(path, 'utf-8');
 
 const resource = text.split(/\r?\n/).map(item => item.split('\t'));
@@ -15,13 +15,15 @@ const data = resource.reduce((result, next) => {
 
 function splitWord(str) {
   const step1 = jieba.tag(str)
-    .filter(item => ['n', 'v'].indexOf(item.tag) !== -1)
+    // .filter(item => ['n', 'v'].indexOf(item.tag) !== -1)
     .map(item => item.word)
-    .filter((item, i, arr) => arr.indexOf(item) === i)
-    .join('');
+    // .filter((item, i, arr) => arr.indexOf(item) === i)
+    .join('$$');
 
-  return jieba.extract(step1, 5)
-    .map(item => item.word).sort().join('');
+  return step1;
+
+  // return jieba.extract(step1, 10)
+  //   .map(item => item.word).sort().join('$$');
 }
 
 function writeDataToFile(path, data) {
