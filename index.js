@@ -36,19 +36,16 @@ function calculate(question, answers) {
 
 let correct = 0;
 
+let result = '';
+
 for (let q in data) {
   if (data.hasOwnProperty(q)) {
     const answers = data[q].map(item => item.answer).filter(item => item.length > 0);
-    const rights = data[q].map(item => item.right);
     const rawResult = calculate(q, answers);
-    const result =
-      rawResult.map((item, i) => ({answer: item, right: Number(rights[i])}))
-        .sort((a, b) => b.answer - a.answer);
-    const idx =  result.map(item=>item.right).indexOf(1);
-    correct += idx < 1 ? 1 : 0;
+    result += rawResult.join('\n') + '\n';
   }
 }
 
-console.log(correct / Object.keys(data).length);
+fs.writeFileSync('./output.txt', result);
 
 
